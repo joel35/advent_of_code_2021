@@ -13,7 +13,7 @@ def main():
 
     print('My input')
     app = HydrothermalVents(
-        Loader('input'),
+        loader=Loader('input'),
         grid_util=Grid(),
         coord_util=Coordinates()
     )
