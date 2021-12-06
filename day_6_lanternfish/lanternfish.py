@@ -71,7 +71,7 @@ class Loader:
 class HatcheryPart1:
     stock: list = field(default_factory=list)
 
-    def make_baby(self, initial_timer=9):
+    def make_baby(self, initial_timer=9):  # timer reduced by 1 upon creation
         self.stock.append(Fish(initial_timer, self))
 
     def count_fish(self):
