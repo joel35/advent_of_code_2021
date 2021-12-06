@@ -9,7 +9,7 @@ def main():
 
 
 def do_part_1():
-    print('\nEXAMPLE 18 DAYS')
+    print('\nExample - 18 days')
     example = LanternfishSimPart1(
         loader=Loader('example_input'),
         hatchery=HatcheryPart1(),
@@ -18,7 +18,7 @@ def do_part_1():
     )
     example.start()
 
-    print('\nEXAMPLE 80 DAYS')
+    print('\nExample - 80 days')
     example = LanternfishSimPart1(
         loader=Loader('example_input'),
         hatchery=HatcheryPart1(),
@@ -27,7 +27,7 @@ def do_part_1():
     )
     example.start()
 
-    print('\nUSER INPUT 80 DAYS')
+    print('\nUser input - 80 days')
     app = LanternfishSimPart1(
         loader=Loader('input'),
         hatchery=HatcheryPart1(),
@@ -38,7 +38,7 @@ def do_part_1():
 
 
 def do_part_2():
-    print('\nEXAMPLE 256 DAYS')
+    print('\nExample - 256 days')
     example = LanternfishSimPart2(
         loader=Loader('example_input'),
         hatchery=HatcheryPart2(),
@@ -46,7 +46,7 @@ def do_part_2():
     )
     example.start()
 
-    print('\nUSER DATA 256 DAYS')
+    print('\nUser data - 256 days')
     example = LanternfishSimPart2(
         loader=Loader('input'),
         hatchery=HatcheryPart2(),
@@ -64,6 +64,7 @@ class Loader:
             return f_in.read()
 
 
+# Part 1 classes
 @dataclass
 class HatcheryPart1:
     stock: list = field(default_factory=list)
@@ -127,6 +128,7 @@ class LanternfishSimPart1:
             current_day += 1
 
 
+# Part 2 classes
 @dataclass
 class HatcheryPart2:
     fish_stock: dict = None
