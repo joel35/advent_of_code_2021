@@ -1,47 +1,57 @@
-import datetime
 from dataclasses import dataclass, field
-from collections import deque
-from multiprocessing import Queue, Pool
-import threading
 
 
 def main():
+    print('Part 1:')
     do_part_1()
+    print('\n\nPart 2:')
     do_part_2()
 
 
 def do_part_1():
-    print('EXAMPLE 18 DAYS')
-    example = LanternfishSim(loader=Loader('example_input'), hatchery=Hatchery(), days_to_simulate=18,
-                             print_output=True, day_timer=False)
+    print('\nEXAMPLE 18 DAYS')
+    example = LanternfishSimPart1(
+        loader=Loader('example_input'),
+        hatchery=HatcheryPart1(),
+        days_to_simulate=18,
+        print_output=True
+    )
     example.start()
 
-    print('EXAMPLE 80 DAYS')
-    example = LanternfishSim(loader=Loader('example_input'), hatchery=Hatchery(), days_to_simulate=80,
-                             print_output=False, day_timer=False)
+    print('\nEXAMPLE 80 DAYS')
+    example = LanternfishSimPart1(
+        loader=Loader('example_input'),
+        hatchery=HatcheryPart1(),
+        days_to_simulate=80,
+        print_output=False
+    )
     example.start()
 
-    print('USER INPUT 80 DAYS')
-    app = LanternfishSim(loader=Loader('input'), hatchery=Hatchery(), days_to_simulate=80, print_output=False,
-                         day_timer=False)
+    print('\nUSER INPUT 80 DAYS')
+    app = LanternfishSimPart1(
+        loader=Loader('input'),
+        hatchery=HatcheryPart1(),
+        days_to_simulate=80,
+        print_output=False
+    )
     app.start()
 
 
 def do_part_2():
-    print('EXAMPLE 18 DAYS')
-    example = LanternfishSim2(loader=Loader('example_input'), days_to_simulate=18)
+    print('\nEXAMPLE 256 DAYS')
+    example = LanternfishSimPart2(
+        loader=Loader('example_input'),
+        hatchery=HatcheryPart2(),
+        days_to_simulate=256
+    )
     example.start()
 
-    print('EXAMPLE 80 DAYS')
-    example = LanternfishSim2(loader=Loader('example_input'), days_to_simulate=80)
-    example.start()
-
-    print('EXAMPLE 256 DAYS')
-    example = LanternfishSim2(loader=Loader('example_input'), days_to_simulate=256)
-    example.start()
-
-    print('USER DATA 256 DAYS')
-    example = LanternfishSim2(loader=Loader('input'), days_to_simulate=256)
+    print('\nUSER DATA 256 DAYS')
+    example = LanternfishSimPart2(
+        loader=Loader('input'),
+        hatchery=HatcheryPart2(),
+        days_to_simulate=256
+    )
     example.start()
 
 
@@ -55,7 +65,7 @@ class Loader:
 
 
 @dataclass
-class Hatchery:
+class HatcheryPart1:
     stock: list = field(default_factory=list)
 
     def make_baby(self, initial_timer=9):
@@ -68,7 +78,7 @@ class Hatchery:
 @dataclass
 class Fish:
     internal_timer: int
-    womb: Hatchery
+    womb: HatcheryPart1
 
     def age_one_day(self):
         self.internal_timer -= 1
@@ -84,9 +94,9 @@ class Fish:
 
 
 @dataclass
-class LanternfishSim:
+class LanternfishSimPart1:
     loader: Loader
-    hatchery: Hatchery
+    hatchery: HatcheryPart1
     days_to_simulate: int
     print_output: bool = False
     day_timer: bool = False
@@ -97,14 +107,14 @@ class LanternfishSim:
         self.get_initial_stock(input)
         self.pass_time(self.days_to_simulate)
         total_fish = self.hatchery.count_fish()
-        print(f'Total fish: {total_fish}')
+        print(f'\tTotal fish: {total_fish}')
 
     def get_initial_stock(self, input):
         for i in input:
             self.hatchery.make_baby(i)
 
         if self.print_output:
-            print(f'Initial state: {[fish.internal_timer for fish in self.hatchery.stock]}')
+            print(f'\tInitial state: {[fish.internal_timer for fish in self.hatchery.stock]}')
 
     def pass_time(self, days):
         current_day = 1
@@ -112,15 +122,13 @@ class LanternfishSim:
         while current_day <= days:
             [fish.age_one_day() for fish in self.hatchery.stock]
             if self.print_output:
-                print(f'After {current_day} days: {[fish.internal_timer for fish in self.hatchery.stock]}')
+                print(f'\tAfter {current_day} days: {[fish.internal_timer for fish in self.hatchery.stock]}')
                 # print(f'After {current_day} days: {self.hatchery.count_fish()} fish')
             current_day += 1
 
 
 @dataclass
-class LanternfishSim2:
-    loader: Loader
-    days_to_simulate: int
+class HatcheryPart2:
     fish_stock: dict = None
 
     def __post_init__(self):
@@ -136,21 +144,7 @@ class LanternfishSim2:
             8: 0
         }
 
-    def start(self):
-        data = self.loader.get_input()
-        input = map(int, data.split(','))
-        self.get_initial_stock(input)
-
-        for _ in range(self.days_to_simulate):
-            self.add_one_day()
-
-        print(sum(self.fish_stock.values()))
-
-    def get_initial_stock(self, input):
-        for i in input:
-            self.fish_stock[i] += 1
-
-    def add_one_day(self):
+    def update_stock(self):
         new_dict = {
             0: self.fish_stock[1],
             1: self.fish_stock[2],
@@ -162,8 +156,34 @@ class LanternfishSim2:
             7: self.fish_stock[8],
             8: self.fish_stock[0]
         }
-
         self.fish_stock = new_dict
+
+    def count_fish(self):
+        return sum(self.fish_stock.values())
+
+
+@dataclass
+class LanternfishSimPart2:
+    loader: Loader
+    hatchery: HatcheryPart2
+    days_to_simulate: int
+
+    def start(self):
+        data = self.loader.get_input()
+        input = map(int, data.split(','))
+        self.get_initial_stock(input)
+
+        for _ in range(self.days_to_simulate):
+            self.add_one_day()
+
+        print(f'\tTotal fish: {self.hatchery.count_fish()}')
+
+    def get_initial_stock(self, input):
+        for i in input:
+            self.hatchery.fish_stock[i] += 1
+
+    def add_one_day(self):
+        self.hatchery.update_stock()
 
 
 if __name__ == '__main__':
