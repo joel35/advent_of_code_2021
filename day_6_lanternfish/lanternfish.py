@@ -66,7 +66,7 @@ class Loader:
             return f_in.read()
 
 
-# Part 1 classes
+# Part 1
 @dataclass
 class HatcheryPart1:
     stock: list = field(default_factory=list)
@@ -130,23 +130,13 @@ class LanternfishSimPart1:
             current_day += 1
 
 
-# Part 2 classes
+# Part 2
 @dataclass
 class HatcheryPart2:
     fish_stock: dict = None
 
     def __post_init__(self):
-        self.fish_stock = {
-            0: 0,
-            1: 0,
-            2: 0,
-            3: 0,
-            4: 0,
-            5: 0,
-            6: 0,
-            7: 0,
-            8: 0
-        }
+        self.fish_stock = {i: 0 for i in range(9)}
 
     def update_stock(self):
         new_dict = {
