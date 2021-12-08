@@ -19,7 +19,18 @@ def do_part_2(data):
         3: 7,
         7: 8
     }
-
+    answer = {
+        8: 'acedgfb',
+        5: 'cdfbe',
+        2: 'gcdfa',
+        3: 'fbcad',
+        7: 'dab',
+        9: 'cefabd',
+        6: 'cdfgeb',
+        4: 'eafb',
+        0: 'cagedb',
+        1: 'ab'
+    }
     for entry in data:
         pattern = entry['pattern']
         output = entry['output']
@@ -31,13 +42,18 @@ def do_part_2(data):
             if number:
                 values[number] = p
 
+        top = [i for i in values[7] if i not in values[1]]
+        print(top)
+        tl_or_m = [i for i in values[4] if i not in values[1] + values[7]]
+        print(tl_or_m)
+
         print(values)
         remaining = [p for p in pattern if p not in values.values()]
         print(remaining)
 
+
+
         # for number in remaining:
-
-
 
 
 def load_data(file: str):
