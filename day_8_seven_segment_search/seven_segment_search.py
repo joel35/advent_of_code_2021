@@ -1,8 +1,8 @@
 def main():
     data = load_data('example_input')
     print(f'Part 1: {do_part_1(data)}')
-    data = load_data('example_input_part_2')
-    do_part_2(data)
+    data = load_data('input')
+    print(do_part_2(data))
 
 
 def do_part_1(data):
@@ -19,22 +19,14 @@ def do_part_2(data):
         3: 7,
         7: 8
     }
-    answer = {
-        8: 'acedgfb',
-        5: 'cdfbe',
-        2: 'gcdfa',
-        3: 'fbcad',
-        7: 'dab',
-        9: 'cefabd',
-        6: 'cdfgeb',
-        4: 'eafb',
-        0: 'cagedb',
-        1: 'ab'
-    }
-    for entry in data:
-        pattern = entry['pattern']
-        output = entry['output']
 
+    answer = 0
+
+    for entry in data:
+        pattern = [''.join(sorted(p)) for p in entry['pattern']]
+        output = [''.join(sorted(o)) for o in entry['output']]
+
+        print(pattern)
         values = {i: None for i in range(10)}
 
         for p in pattern:
@@ -42,18 +34,43 @@ def do_part_2(data):
             if number:
                 values[number] = p
 
-        top = [i for i in values[7] if i not in values[1]]
-        print(top)
-        tl_or_m = [i for i in values[4] if i not in values[1] + values[7]]
-        print(tl_or_m)
+        for p in pattern:
+            if len(p) == 5 and all(char in p for char in values[7]):
+                values[3] = p
+            if len(p) == 6 and all(char in p for char in values[4]):
+                values[9] = p
+            if (
+                len(p) == 6
+                and all(char in p for char in values[7])
+                and any(char not in p for char in values[4])
+            ):
+                values[0] = p
 
-        print(values)
+        for p in pattern:
+            if (
+                    len(p) == 5
+                    and all(char in values[9] for char in p)
+                    and any(char not in p for char in values[1])
+            ):
+                values[5] = p
+
         remaining = [p for p in pattern if p not in values.values()]
-        print(remaining)
 
+        for p in remaining:
+            if len(p) == 5:
+                values[2] = p
+            else:
+                values[6] = p
+        print(values)
 
+        new_key = {v: k for k, v in values.items()}
 
-        # for number in remaining:
+        # print(new_key)
+        print(output)
+        value = int(''.join(str(new_key[word]) for word in output))
+        answer += value
+        print()
+    return answer
 
 
 def load_data(file: str):
