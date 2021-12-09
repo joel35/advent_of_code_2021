@@ -96,12 +96,12 @@ def get_adjacent(row, column):
 
 
 def not_valid(row, column, grid):
-    return row < 0 or \
-           row >= len(grid) or \
-           column < 0 or \
-           column >= len(grid[0]) or \
-           grid[row][column] == 9 or \
-           grid[row][column] < 0
+    return (row < 0 or
+            row >= len(grid) or
+            column < 0 or
+            column >= len(grid[0]) or
+            grid[row][column] == 9 or
+            grid[row][column] < 0)
 
 
 def get_grid(file):
