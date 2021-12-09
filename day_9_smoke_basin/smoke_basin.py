@@ -1,4 +1,5 @@
 from copy import copy
+
 import numpy as np
 
 
@@ -37,19 +38,21 @@ def get_map(grid):
 
 
 def get_low_points(grid, map):
-    last_row, last_column = map[-1]
     low_points = []
     low_point_locations = []
 
     for row, column in map:
         value = grid[row][column]
 
-        above = grid[row - 1][column] if row != 0 else float('inf')
-        below = grid[row + 1][column] if row != last_row else float('inf')
-        left = grid[row][column - 1] if column != 0 else float('inf')
-        right = grid[row][column + 1] if column != last_column else float('inf')
+        adj_values = [
+            grid[loc['row']][loc['col']]
+            if not not_valid(loc['row'], loc['col'], grid)
+            else float('inf')
+            for loc
+            in get_adjacent(row, column)
+        ]
 
-        if all(value < adjacent for adjacent in [above, below, left, right]):
+        if all(value < adj_val for adj_val in adj_values):
             low_points.append(value)
             low_point_locations.append((row, column))
 
@@ -58,7 +61,7 @@ def get_low_points(grid, map):
 
 def check_for_basin(row, column, grid, list):
     if not_valid(row, column, grid):
-        return None
+        return list
 
     value = copy(grid[row][column])
     grid[row][column] = -1
