@@ -1,5 +1,6 @@
 import math
 from abc import ABC, abstractmethod
+from collections import deque
 from dataclasses import dataclass
 
 
@@ -22,12 +23,12 @@ class Solver(ABC):
         pass
 
     def get_illegal(self, line):
-        opens = []
+        stack = deque()
         for i, char in enumerate(line):
             if char in self.chunks.keys():
-                opens.append(char)
-            elif char == self.chunks[opens[-1]]:
-                opens.pop(-1)
+                stack.append(char)
+            elif char == self.chunks[stack[-1]]:
+                stack.pop()
             else:
                 return char
 
@@ -63,17 +64,17 @@ class Part2(Solver):
         return self.get_middle_score(scores)
 
     def get_closers(self, line):
-        opens = []
+        stack = deque()
 
         for i, char in enumerate(line):
             if char in self.chunks.keys():
-                opens.append(char)
-            elif char == self.chunks[opens[-1]]:
-                opens.pop(-1)
+                stack.append(char)
+            elif char == self.chunks[stack[-1]]:
+                stack.pop()
             else:
                 continue
 
-        return ''.join(self.chunks[o] for o in reversed(opens))
+        return ''.join(self.chunks[o] for o in reversed(stack))
 
     def get_score(self, line):
         score = 0
