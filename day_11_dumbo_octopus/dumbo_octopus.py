@@ -21,8 +21,7 @@ def solve(grid, p1=100, timeout=1000):
 
 
 def load(file):
-    with open(file, 'r') as f:
-        return np.array([[int(i) for i in row] for row in f.read().strip().splitlines()])
+    return np.genfromtxt(file, delimiter=1, dtype=int)
 
 
 def step(grid):
@@ -30,16 +29,14 @@ def step(grid):
     flash_count = 0
 
     while True:
-        tens = [(r, c) for r, c in zip(*np.where(grid == 10))]
+        flash = grid == 10
+        flash_count += flash.sum()
 
-        flashes = len(tens)
-        flash_count += flashes
-
-        if flashes == 0:
+        if not flash.any():
             sync = np.all((grid == 0))
             return flash_count, sync
 
-        for coord in tens:
+        for coord in zip(*np.where(flash)):
             neighbours = [n for n in get_neighbours(coord).values() if valid(n, grid) and 10 > grid[n] > 0]
 
             for r, c in neighbours:
