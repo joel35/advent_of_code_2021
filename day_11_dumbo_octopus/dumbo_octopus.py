@@ -29,32 +29,25 @@ def step(grid):
 
     while flash.any():
         flash_count += flash.sum()
-
         for coord in zip(*np.where(flash)):
-            neighbours = [n for n in get_neighbours(coord).values() if valid(n, grid) and 10 > grid[n] > 0]
-
-            for r, c in neighbours:
-                grid[r][c] += 1
-
+            for xy in get_neighbours(*coord, grid):
+                if 10 > grid[xy] > 0:
+                    grid[xy] += 1
             grid[coord] = 0
-
         flash = grid == 10
-
     return flash_count
 
 
-def get_neighbours(coord):
-    r, c = coord
-    return dict(
-        nw=(r - 1, c - 1),
-        n=(r - 1, c),
-        ne=(r - 1, c + 1),
-        w=(r, c - 1),
-        e=(r, c + 1),
-        sw=(r + 1, c - 1),
-        s=(r + 1, c),
-        se=(r + 1, c + 1),
-    )
+def get_neighbours(r, c, grid):
+    return [x for x in [(r - 1, c - 1),
+                        (r - 1, c),
+                        (r - 1, c + 1),
+                        (r, c - 1),
+                        (r, c + 1),
+                        (r + 1, c - 1),
+                        (r + 1, c),
+                        (r + 1, c + 1)]
+            if valid(x, grid)]
 
 
 def valid(coord, grid):
