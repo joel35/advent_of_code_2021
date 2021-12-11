@@ -5,12 +5,12 @@ def main():
     solve(load('input'))
 
 
-def solve(grid, p1=100):
+def solve(grid, p1=100, timeout=1000):
     flash_count = 0
     steps = 0
     sync = False
 
-    while not sync:
+    while not sync or steps == timeout:
         steps += 1
         flashes, sync = step(grid)
         flash_count += flashes
