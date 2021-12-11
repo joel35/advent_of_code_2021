@@ -8,12 +8,10 @@ def main():
 def solve(grid, p1=100, timeout=1000):
     flash_count = 0
     steps = 0
-    sync = False
 
-    while not sync and steps < timeout:
+    while grid.any() and steps < timeout:
         steps += 1
-        flashes, sync = step(grid)
-        flash_count += flashes
+        flash_count += step(grid)
         if steps == p1:
             print(f'Part 1: {flash_count}')
 
@@ -27,14 +25,10 @@ def load(file):
 def step(grid):
     grid += 1
     flash_count = 0
+    flash = grid == 10
 
-    while True:
-        flash = grid == 10
+    while flash.any():
         flash_count += flash.sum()
-
-        if not flash.any():
-            sync = np.all((grid == 0))
-            return flash_count, sync
 
         for coord in zip(*np.where(flash)):
             neighbours = [n for n in get_neighbours(coord).values() if valid(n, grid) and 10 > grid[n] > 0]
@@ -43,6 +37,10 @@ def step(grid):
                 grid[r][c] += 1
 
             grid[coord] = 0
+
+        flash = grid == 10
+
+    return flash_count
 
 
 def get_neighbours(coord):
