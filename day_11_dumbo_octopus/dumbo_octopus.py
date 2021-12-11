@@ -10,7 +10,7 @@ def solve(grid, p1=100, timeout=1000):
     steps = 0
     sync = False
 
-    while not sync or steps == timeout:
+    while not sync or steps != timeout:
         steps += 1
         flashes, sync = step(grid)
         flash_count += flashes
