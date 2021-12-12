@@ -29,10 +29,10 @@ def step(grid):
 
     while flash.any():
         flash_count += flash.sum()
-        for coord in zip(*np.where(flash)):
-            grid[coord] = 0
-            for xy in get_neighbours(*coord, grid):
-                grid[xy] += 1
+        for flasher_xy in zip(*np.where(flash)):
+            grid[flasher_xy] = 0
+            for neigh_xy in get_neighbours(*flasher_xy, grid):
+                grid[neigh_xy] += 1
         flash = grid == 10
     return flash_count
 
