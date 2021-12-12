@@ -5,11 +5,11 @@ def main():
     solve(load('input'))
 
 
-def solve(grid, p1=100, timeout=1000):
+def solve(grid, p1=100, max=1000):
     flash_count = 0
     steps = 0
 
-    while grid.any() and steps < timeout:
+    while grid.any() and steps < max:
         steps += 1
         flash_count += step(grid)
         if steps == p1:
@@ -30,33 +30,28 @@ def step(grid):
     while flash.any():
         flash_count += flash.sum()
         for coord in zip(*np.where(flash)):
-            for xy in get_neighbours(*coord, grid):
-                if 10 > grid[xy] > 0:
-                    grid[xy] += 1
             grid[coord] = 0
+            for xy in get_neighbours(*coord, grid):
+                grid[xy] += 1
         flash = grid == 10
     return flash_count
 
 
-def get_neighbours(r, c, grid):
-    return [x for x in [(r - 1, c - 1),
-                        (r - 1, c),
-                        (r - 1, c + 1),
-                        (r, c - 1),
-                        (r, c + 1),
-                        (r + 1, c - 1),
-                        (r + 1, c),
-                        (r + 1, c + 1)]
-            if valid(x, grid)]
+def get_neighbours(x, y, grid):
+    return [xy for xy in [(x - 1, y - 1),
+                          (x - 1, y),
+                          (x - 1, y + 1),
+                          (x, y - 1),
+                          (x, y + 1),
+                          (x + 1, y - 1),
+                          (x + 1, y),
+                          (x + 1, y + 1)]
+            if valid(*xy, grid)]
 
 
-def valid(coord, grid):
-    return all([
-        coord[0] >= 0,
-        coord[1] >= 0,
-        coord[0] < len(grid),
-        coord[1] < len(grid[0])
-    ])
+def valid(x, y, grid):
+    max_x, max_y = grid.shape
+    return all([max_x > x >= 0, max_y > y >= 0]) and 10 > grid[x, y] > 0
 
 
 if __name__ == '__main__':
